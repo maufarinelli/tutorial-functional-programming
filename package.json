@@ -1,0 +1,16 @@
+{
+  "name": "functional-programming-tutorial",
+  "version": "0.0.1",
+  "description": "An introduction to functional programming in JavaScript",
+  "author": "Mauricio Farinelli",
+  "scripts": {
+    "start": "http-server -a 0.0.0.0 -p 9090"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-watch": "^0.6.1",
+    "lodash": "^3.9.3",
+    "http-server": "0.8.0",
+    "bootstrap": "^3.3.5"
+  }
+}

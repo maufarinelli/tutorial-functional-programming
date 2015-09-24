@@ -1,0 +1,7 @@
+.container li {
+    margin-bottom: 30px;
+}
+
+.container a {
+    cursor: pointer;
+}
