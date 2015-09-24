@@ -12,61 +12,115 @@
         {name: 'Vancouver', passagem: 1590.00, hotel: 320.00, category: 'north-america'},
         {name: 'Roma',      passagem: 1400.00, hotel: 1950.00, category: 'europe'},
     ];
-
-    for(var i = 0; i < cities.length; i++) {
-        cities[i].pacote = (cities[i].passagem + cities[i].hotel) * 0.8;
+    function createPackages() {
+        for(var i = 0; i < cities.length; i++) {
+            cities[i].pacote = (cities[i].passagem + cities[i].hotel) * 0.8;
+        }
     }
 
-    // Initial state
-    var template = _.template('<% _.forEach(cities, function(city) { %>'+
-        '<li class="col-xs-4">'+ 
-            '<div class="list-group-item">'+
-                '<h4 class="list-group-item-heading"><%- city.name %></h4>'+
-                '<p class="list-group-item-text">Passagem: R$ <%- city.passagem %></p>'+
-                '<p class="list-group-item-text">Hotel: R$ <%- city.hotel %></p>'+
-                '<p class="list-group-item-text">Pacote completo: R$ <%- city.pacote %></p>'+
-            '</div>'+
-        '</li>'+
-    '<% }); %>'),
-        compiled = template({cities: cities});
 
-    var travelBoard = document.getElementById('travel-board');
-    travelBoard.innerHTML = compiled;
 
+    //DOM manipulation
+    var travelBoard = document.getElementById('travel-board'),
+        filterButtons = document.querySelector('.continents-filter').querySelectorAll('li');
+
+
+
+    // Templating
+    var template, 
+        compiled;
+    function getTemplate(data) {
+        var data = data;
+        return _.template('<% _.forEach(data, function(city) { %>'+
+            '<li class="col-xs-4">'+ 
+                '<div class="list-group-item">'+
+                    '<h4 class="list-group-item-heading"><%- city.name %></h4>'+
+                    '<p class="list-group-item-text">Passagem: R$ <%- city.passagem %></p>'+
+                    '<p class="list-group-item-text">Hotel: R$ <%- city.hotel %></p>'+
+                    '<p class="list-group-item-text">Pacote completo: R$ <%- city.pacote %></p>'+
+                '</div>'+
+            '</li>'+
+        '<% }); %>');
+    }
+
+    function compileTemplate(template, list) {
+        return template({data: list});
+    }
+
+    function appendTemplateToDOM() {
+        travelBoard.innerHTML = compiled;
+    }
+
+
+
+    // Filter Buttons
     function clearAllFilterButtons() {
         for(var i = 0; i < filterButtons.length; i++) {
             filterButtons[i].setAttribute('class', '');
         }
     }
 
+    function activateSelectedFilterButton(selectedElement) {
+        selectedElement.setAttribute('class', 'active');
+    }
+
+
+
+    // Filter Results as a List 
+    function getFilteredList(category) {
+        var filteredList = [];
+
+        if(category === 'all') {
+            return cities;
+        }
+
+        for(var i = 0; i < cities.length; i++) {
+            if(cities[i].category === category) {
+                filteredList.push(cities[i]);
+            }
+        }
+        return filteredList;
+    }
+
     function filterList(event) {
         var filterSelected = event.currentTarget,
-            category = filterSelected.getAttribute('data-category'),
+            continent = filterSelected.getAttribute('data-category'),
             filteredList = [];
 
         // Active nav-pills
         clearAllFilterButtons();
-        filterSelected.setAttribute('class', 'active');
+        activateSelectedFilterButton(filterSelected);
 
-        if(category === 'all') {
-            filteredList = cities;
-        }
-        else {
-            for(var i = 0; i < cities.length; i++) {
-                if(cities[i].category === category) {
-                    filteredList.push(cities[i]);
-                }
-            }
-        }
+        // Get filtered list
+        filteredList = getFilteredList(continent);
 
-        compiled = template({cities: filteredList});
-        travelBoard.innerHTML = compiled;
+        // Compile and append new templato to the DOM
+        compiled = compileTemplate(template, filteredList);
+        appendTemplateToDOM();
     }
 
-    var filterButtons = document.querySelector('.continents-filter').querySelectorAll('li');
-    for(var i = 0; i < filterButtons.length; i++) {
-        filterButtons[i].addEventListener('click', filterList);
+
+
+    // Bind events
+    function addListenersFiltersClick() {
+        for(var i = 0; i < filterButtons.length; i++) {
+            filterButtons[i].addEventListener('click', filterList);
+        }
     }
+     
+
+
+    // Initialize app
+    function init() {
+        createPackages();
+        template = getTemplate(cities);
+
+        compiled = compileTemplate(template, cities);
+        appendTemplateToDOM();
+
+        addListenersFiltersClick();
+    }
+    init();
 
 })(window._)
 
