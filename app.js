@@ -5,8 +5,19 @@
         for(var i = 0; i < list.length; i++) {
             //list[i].pacote = (list[i].passagem + list[i].hotel) * 0.8;
             resultList.push(callback(list[i]));
+
         }
         return resultList;
+    };
+    utilities.cloneObject = function(obj) {
+        if(typeof obj === "object") {
+            var clone = {};
+            for (var prop in obj)
+                if (obj.hasOwnProperty(prop))
+                    clone[prop] = obj[prop];
+
+            return clone;
+        }
     };
 
     // Data
@@ -22,9 +33,11 @@
         {name: 'Vancouver', passagem: 1590.00, hotel: 320.00, category: 'north-america'},
         {name: 'Roma',      passagem: 1400.00, hotel: 1950.00, category: 'europe'},
     ];
+
     var citiesWithPackages = utilities.map(cities, function(city) {
-        return city.pacote = (city.passagem + city.hotel) * 0.8;
-        //return city;
+        var city = utilities.cloneObject(city);
+        city.pacote = (city.passagem + city.hotel) * 0.8;
+        return city;
     });
 
     /*function createPackages(cities) {
@@ -134,7 +147,7 @@
         //createPackages();
         template = getTemplate();
 
-        compiled = compileTemplate(template, cities);
+        compiled = compileTemplate(template, citiesWithPackages);
         appendTemplateToDOM();
 
         addListenersFiltersClick();
