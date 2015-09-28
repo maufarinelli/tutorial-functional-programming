@@ -29,8 +29,7 @@
     // Templating
     var template, 
         compiled;
-    function getTemplate(data) {
-        var data = data;
+    function getTemplate() {
         return _.template('<% _.forEach(data, function(city) { %>'+
             '<li class="col-xs-4">'+ 
                 '<div class="list-group-item">'+
@@ -113,7 +112,7 @@
     // Initialize app
     function init() {
         createPackages();
-        template = getTemplate(cities);
+        template = getTemplate();
 
         compiled = compileTemplate(template, cities);
         appendTemplateToDOM();
