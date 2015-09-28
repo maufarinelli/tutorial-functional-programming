@@ -1,4 +1,14 @@
 (function(_) {
+    var utilities = {};
+    utilities.map = function(list, callback) {
+        var resultList = [];
+        for(var i = 0; i < list.length; i++) {
+            //list[i].pacote = (list[i].passagem + list[i].hotel) * 0.8;
+            resultList.push(callback(list[i]));
+        }
+        return resultList;
+    };
+
     // Data
     var cities = [
         {name: 'Nova York', passagem: 1550.00, hotel: 1800.00, category: 'north-america'},
@@ -12,12 +22,22 @@
         {name: 'Vancouver', passagem: 1590.00, hotel: 320.00, category: 'north-america'},
         {name: 'Roma',      passagem: 1400.00, hotel: 1950.00, category: 'europe'},
     ];
-    function createPackages() {
+    var citiesWithPackages = utilities.map(cities, function(city) {
+        return city.pacote = (city.passagem + city.hotel) * 0.8;
+        //return city;
+    });
+
+    /*function createPackages(cities) {
+        var list = [];
         for(var i = 0; i < cities.length; i++) {
             cities[i].pacote = (cities[i].passagem + cities[i].hotel) * 0.8;
+            list.push(cities);
         }
+        return list;
     }
+    var citiesWithPackages = createPackages(cities);*/
 
+    
 
 
     //DOM manipulation
@@ -29,8 +49,7 @@
     // Templating
     var template, 
         compiled;
-    function getTemplate(data) {
-        var data = data;
+    function getTemplate() {
         return _.template('<% _.forEach(data, function(city) { %>'+
             '<li class="col-xs-4">'+ 
                 '<div class="list-group-item">'+
@@ -112,8 +131,8 @@
 
     // Initialize app
     function init() {
-        createPackages();
-        template = getTemplate(cities);
+        //createPackages();
+        template = getTemplate();
 
         compiled = compileTemplate(template, cities);
         appendTemplateToDOM();
