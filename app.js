@@ -1,4 +1,42 @@
 (function(_) {
+    var utilities = {};
+
+    utilities.map = function(list, callback) {
+        var resultList = [];
+        for(var i = 0; i < list.length; i++) {
+            resultList.push(callback(list[i]));
+
+        }
+        return resultList;
+    };
+
+    /**
+     * toClone 
+     * @param {String} 2 strings as parameters: object or array
+     * @return {Function} the right function to clone 
+     */
+    utilities.toClone = function() {
+        if(arguments[0] === "object") {
+            return function(obj) {
+                var clone = {};
+                for(var prop in obj)
+                    if (obj.hasOwnProperty(prop))
+                        clone[prop] = obj[prop];
+
+                return clone;
+            };
+        }
+        if(arguments[0] === "array") {
+            return function(obj) {
+                var arrayClone = [];
+                for(var i = 0; i < obj.length; i++) {
+                    arrayClone.push(obj);
+                }
+                return arrayClone;
+            };
+        }
+    };
+
     // Data
     var cities = [
         {name: 'Nova York', passagem: 1550.00, hotel: 1800.00, category: 'north-america'},
@@ -12,11 +50,18 @@
         {name: 'Vancouver', passagem: 1590.00, hotel: 320.00, category: 'north-america'},
         {name: 'Roma',      passagem: 1400.00, hotel: 1950.00, category: 'europe'},
     ];
-    function createPackages() {
-        for(var i = 0; i < cities.length; i++) {
-            cities[i].pacote = (cities[i].passagem + cities[i].hotel) * 0.8;
+
+    var citiesWithPackages = utilities.map(cities, function(city) {
+        if(typeof city.passagem !== 'undefined' && typeof city.hotel !== 'undefined') {
+            var clone = utilities.toClone("object");
+            var city = clone(city);
+            city.pacote = (city.passagem + city.hotel) * 0.8;
         }
-    }
+        return city;
+    });
+
+    console.log("cities - 1 item: ", cities[0]);
+    console.log("citiesWithPackages - 1 item  ", citiesWithPackages[0]);
 
 
 
@@ -111,10 +156,9 @@
 
     // Initialize app
     function init() {
-        createPackages();
         template = getTemplate();
 
-        compiled = compileTemplate(template, cities);
+        compiled = compileTemplate(template, citiesWithPackages);
         appendTemplateToDOM();
 
         addListenersFiltersClick();
