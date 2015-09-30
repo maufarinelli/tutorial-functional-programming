@@ -60,9 +60,6 @@
         return city;
     });
 
-    console.log("cities - 1 item: ", cities[0]);
-    console.log("citiesWithPackages - 1 item  ", citiesWithPackages[0]);
-
 
 
     //DOM manipulation
